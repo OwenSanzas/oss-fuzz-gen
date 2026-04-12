@@ -57,7 +57,7 @@ NUM_EVA = int(os.getenv('LLM_NUM_EVA', '3'))
 # It controls the number of LLM responses per prompt, which may exceed your
 # LLM's limit on query-per-second.
 NUM_SAMPLES = 2
-MAX_TOKENS: int = 4096
+MAX_TOKENS: int = 8192
 RUN_TIMEOUT: int = 30
 TEMPERATURE: float = 0.4
 

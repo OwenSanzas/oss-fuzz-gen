@@ -1122,4 +1122,18 @@ class AIBinaryModel(GoogleModel):
     return
 
 
+class DeepSeek(GPT):
+  """DeepSeek model via OpenAI-compatible API."""
+
+  name = 'deepseek-chat'
+  _gpt_ai_model = 'deepseek-chat'
+
+  def _get_client(self):
+    """Returns an OpenAI client pointed at DeepSeek's API."""
+    return openai.OpenAI(
+        api_key=os.getenv('DEEPSEEK_API_KEY'),
+        base_url='https://api.deepseek.com',
+    )
+
+
 DefaultModel = GeminiV1D5
