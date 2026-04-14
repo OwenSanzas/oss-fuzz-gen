@@ -192,6 +192,11 @@ class OFGRunner:
                 'Export it before running this script.'
             )
 
+        # Ask our forked OFG builder to disable the OSS-Fuzz seed corpus so
+        # every fuzz run starts cold. This makes coverage comparable to other
+        # tools (e.g. gold harnesses) measured under the same conditions.
+        os.environ['OFG_EMPTY_CORPUS'] = '1'
+
     def _prepare_oss_fuzz(self):
         with self._prepare_lock:
             if self._oss_fuzz_ready:

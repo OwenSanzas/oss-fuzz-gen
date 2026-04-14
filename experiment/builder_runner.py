@@ -575,28 +575,55 @@ class BuilderRunner:
     logger.info('Running %s', generated_project)
     corpus_dir = self.work_dirs.corpus(benchmark_target_name)
     command = [
-        'python3', 'infra/helper.py', 'run_fuzzer', '--corpus-dir', corpus_dir,
+        'python3', 'infra/helper.py', 'run_fuzzer',
+        '--corpus-dir', corpus_dir,
         generated_project, self.benchmark.target_name, '--'
     ] + self._libfuzzer_args()
 
-    with open(log_path, 'w') as f:
-      proc = sp.Popen(command,
-                      stdin=sp.DEVNULL,
-                      stdout=f,
-                      stderr=sp.STDOUT,
-                      cwd=oss_fuzz_checkout.OSS_FUZZ_DIR)
+    # Force empty corpus when OFG_EMPTY_CORPUS=1 is set in the environment.
+    # We can't use SKIP_SEED_CORPUS=1 because the upstream run_fuzzer script
+    # also drops the corpus dir positional argument when that flag is set,
+    # which means libFuzzer never persists newly discovered inputs. Instead,
+    # we temporarily rename the seed corpus zip so the script's "found seed
+    # corpus" check fails, but the corpus dir is still passed to libFuzzer
+    # so it learns and saves findings to disk.
+    seed_corpus_backup = None
+    if os.environ.get('OFG_EMPTY_CORPUS') == '1':
+      build_out = os.path.join(
+          oss_fuzz_checkout.OSS_FUZZ_DIR, 'build', 'out', generated_project)
+      seed_corpus_zip = os.path.join(
+          build_out, f'{self.benchmark.target_name}_seed_corpus.zip')
+      if os.path.exists(seed_corpus_zip):
+        seed_corpus_backup = seed_corpus_zip + '.empty_corpus_bak'
+        os.rename(seed_corpus_zip, seed_corpus_backup)
 
-      # TODO(ochang): Handle the timeout exception.
-      try:
-        proc.wait(timeout=self.run_timeout + 5)
-      except sp.TimeoutExpired:
-        logger.info('%s timed out during fuzzing.', generated_project)
-        # Try continuing and parsing the logs even in case of timeout.
+    try:
+      with open(log_path, 'w') as f:
+        proc = sp.Popen(command,
+                        stdin=sp.DEVNULL,
+                        stdout=f,
+                        stderr=sp.STDOUT,
+                        cwd=oss_fuzz_checkout.OSS_FUZZ_DIR)
 
-    if proc.returncode != 0:
-      logger.info('********** Failed to run %s. **********', generated_project)
-    else:
-      logger.info('Successfully run %s.', generated_project)
+        # TODO(ochang): Handle the timeout exception.
+        try:
+          proc.wait(timeout=self.run_timeout + 5)
+        except sp.TimeoutExpired:
+          logger.info('%s timed out during fuzzing.', generated_project)
+          # Try continuing and parsing the logs even in case of timeout.
+
+      if proc.returncode != 0:
+        logger.info('********** Failed to run %s. **********', generated_project)
+      else:
+        logger.info('Successfully run %s.', generated_project)
+    finally:
+      # Restore the seed corpus zip if we moved it for OFG_EMPTY_CORPUS.
+      if seed_corpus_backup and os.path.exists(seed_corpus_backup):
+        try:
+          original = seed_corpus_backup[:-len('.empty_corpus_bak')]
+          os.rename(seed_corpus_backup, original)
+        except OSError:
+          pass
 
   def build_target_local(self,
                          generated_project: str,
