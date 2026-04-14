@@ -1,0 +1,5 @@
+# Python dependencies for the AGF reproducibility scripts.
+# These are in addition to OSS-Fuzz-Gen's own requirements.txt at the
+# repository root.
+anthropic>=0.94.0
+PyYAML>=6.0

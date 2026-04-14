@@ -1,0 +1,8 @@
+"functions":
+- "name": "yaml_parser_load"
+  "return_type": "void"
+  "signature": "yaml_parser_load()"
+"language": "c"
+"project": "libyaml"
+"target_name": "libyaml_loader_fuzzer"
+"target_path": "/src/libyaml_loader_fuzzer.c"

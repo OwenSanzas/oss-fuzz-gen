@@ -1,0 +1,8 @@
+"functions":
+- "name": "uncompress2"
+  "return_type": "void"
+  "signature": "uncompress2()"
+"language": "c"
+"project": "zlib"
+"target_name": "zlib_uncompress2_fuzzer"
+"target_path": "/src/zlib_uncompress2_fuzzer.cc"

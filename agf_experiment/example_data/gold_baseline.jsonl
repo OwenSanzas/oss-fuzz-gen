@@ -1,0 +1,2 @@
+{"case_id": "zlib/zlib_uncompress2_fuzzer", "lines": 53.10, "branches": 49.70, "functions": 36.54, "regions": 56.10}
+{"case_id": "libyaml/libyaml_loader_fuzzer", "lines": 74.00, "branches": 60.00, "functions": 70.00, "regions": 65.00}
