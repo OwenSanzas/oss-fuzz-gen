@@ -103,6 +103,8 @@ class LLM:
       return AIBinaryModel(name, ai_binary, max_tokens, num_samples,
                            temperature)
 
+    # Handle our custom Claude Sonnet 4.6 model name - DON'T remap, let it find our custom class
+
     for subcls in cls.all_llm_subclasses():
       if getattr(subcls, 'name', None) == name:
         return subcls(
@@ -553,8 +555,9 @@ class Claude(LLM):
   # ================================ Prompt ================================ #
   def estimate_token_num(self, text) -> int:
     """Estimates the number of tokens in |text|."""
-    client = anthropic.Client()
-    return client.count_tokens(text)
+    # Simple token estimation: roughly 4 characters per token
+    text = text or ''
+    return len(text) // 4
 
   def prompt_type(self) -> type[prompts.Prompt]:
     """Returns the expected prompt type."""
@@ -624,6 +627,125 @@ class ClaudeSonnetV3D5(Claude):
 
   name = 'vertex_ai_claude-3-5-sonnet'
   _vertex_ai_model = 'claude-3-5-sonnet@20240620'
+
+
+class ClaudeSonnet46Direct(Claude):
+  """Claude Sonnet 4.6 via direct Anthropic API (not Vertex AI)."""
+
+  name = 'claude-sonnet-4-6'
+  _vertex_ai_model = 'claude-sonnet-4-6'
+
+  def query_llm(self, prompt: prompts.Prompt, response_dir: str) -> None:
+    """Override: use direct Anthropic API instead of Vertex AI."""
+    client = anthropic.Anthropic(
+        api_key=os.getenv('ANTHROPIC_API_KEY'),
+        timeout=180.0
+    )
+
+    # Split system messages from user/assistant messages (new API format).
+    messages = prompt.get()
+    system_text = None
+    filtered_messages = []
+    for msg in messages:
+      if msg.get('role') == 'system':
+        system_text = msg.get('content', '')
+      else:
+        filtered_messages.append(msg)
+
+    # API requires at least one user message. If only system was provided,
+    # promote it to a user message.
+    if not filtered_messages and system_text:
+      filtered_messages = [{'role': 'user', 'content': system_text}]
+      system_text = None
+
+    kwargs = dict(
+        max_tokens=self._max_output_tokens,
+        messages=filtered_messages,
+        model='claude-sonnet-4-6',
+        temperature=self.temperature,
+    )
+    if system_text:
+      kwargs['system'] = system_text
+
+    completion = self.with_retry_on_error(
+        lambda: client.messages.create(**kwargs),
+        [anthropic.AnthropicError])
+
+    for index, choice in enumerate(completion.content):
+      content = choice.text
+      self._save_output(index, content, response_dir)
+
+  def get_chat_client(self, model: Any) -> Any:
+    """Returns direct Anthropic chat client."""
+    return anthropic.Anthropic(
+        api_key=os.getenv('ANTHROPIC_API_KEY'),
+        timeout=180.0
+    )
+
+  def _split_system(self, messages):
+    """Extract system message from messages list for new API format."""
+    system_text = None
+    filtered = []
+    for msg in messages:
+      if msg.get('role') == 'system':
+        system_text = msg.get('content', '')
+      else:
+        filtered.append(msg)
+    # API requires at least one user message.
+    if not filtered and system_text:
+      filtered = [{'role': 'user', 'content': system_text}]
+      system_text = None
+    return filtered, system_text
+
+  def chat_llm(self, client: Any, prompt: prompts.Prompt) -> str:
+    """Direct API chat call."""
+    msgs, system = self._split_system(prompt.get())
+    kwargs = dict(max_tokens=self._max_output_tokens, messages=msgs,
+                  model='claude-sonnet-4-6', temperature=self.temperature)
+    if system:
+      kwargs['system'] = system
+    completion = client.messages.create(**kwargs)
+    return completion.content[0].text if completion.content else ''
+
+  def chat_llm_with_tools(self, client: Any, prompt: Optional[prompts.Prompt],
+                          tools) -> Any:
+    """Direct API chat with tools."""
+    messages = prompt.get() if prompt else []
+    msgs, system = self._split_system(messages)
+    kwargs = dict(max_tokens=self._max_output_tokens, messages=msgs,
+                  model='claude-sonnet-4-6', temperature=self.temperature)
+    if system:
+      kwargs['system'] = system
+    if tools:
+      kwargs['tools'] = tools
+    return client.messages.create(**kwargs)
+
+  def ask_llm(self, prompt: prompts.Prompt) -> str:
+    """Queries Claude Sonnet 4.6 and returns response text directly."""
+    client = anthropic.Anthropic(
+        api_key=os.getenv('ANTHROPIC_API_KEY'),
+        timeout=180.0
+    )
+
+    messages = prompt.get()
+    msgs, system = self._split_system(messages)
+
+    kwargs = dict(
+        max_tokens=self._max_output_tokens,
+        messages=msgs,
+        model='claude-sonnet-4-6',
+        temperature=self.temperature,
+    )
+    if system:
+      kwargs['system'] = system
+
+    completion = self.with_retry_on_error(
+        lambda: client.messages.create(**kwargs),
+        [anthropic.AnthropicError])
+    return completion.content[0].text if completion.content else ''
+
+  def get_model(self) -> Any:
+    return 'claude-sonnet-4-6'
 
 
 class GoogleModel(LLM):

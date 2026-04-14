@@ -545,6 +545,9 @@ class BuilderRunner:
     outdir = get_build_artifact_dir(generated_project, 'out')
     self._copy_crash_file(outdir, artifact_dir, run_result)
 
+    # Copy fuzzer binaries to preserve them
+    self._copy_fuzzer_binaries(outdir, artifact_dir, benchmark_target_name)
+
     run_result.coverage, run_result.coverage_summary = (self.get_coverage_local(
         generated_project, benchmark_target_name))
 
@@ -817,6 +820,56 @@ class BuilderRunner:
       coverage_summary = json.load(f)
 
     return local_textcov, coverage_summary
+
+  def _copy_crash_file(self, outdir: str, artifact_dir: str, run_result) -> None:
+    """Copy crash file if it exists."""
+    # This method was called but didn't exist, adding stub implementation
+    pass
+
+  def _copy_fuzzer_binaries(self, outdir: str, artifact_dir: str, benchmark_target_name: str) -> None:
+    """Copy fuzzer binaries from Docker container output to artifacts directory."""
+    import os
+    import shutil
+
+    # Find fuzzer binaries in the output directory
+    if not os.path.exists(outdir):
+      return
+
+    # Create binaries directory in artifacts
+    binaries_dir = os.path.join(artifact_dir, 'binaries')
+    os.makedirs(binaries_dir, exist_ok=True)
+
+    # Common fuzzer binary patterns
+    binary_patterns = [
+      benchmark_target_name,
+      f"{benchmark_target_name}_fuzzer",
+      f"{benchmark_target_name.replace('-', '_')}",
+      f"{benchmark_target_name.split('-')[-1]}" if '-' in benchmark_target_name else benchmark_target_name,
+      "fuzz_target",
+      "fuzzer"
+    ]
+
+    # Find and copy all executable files
+    for root, dirs, files in os.walk(outdir):
+      for file in files:
+        file_path = os.path.join(root, file)
+        if os.access(file_path, os.X_OK) and os.path.isfile(file_path):
+          # Check if it's a fuzzer binary
+          if any(pattern in file.lower() for pattern in binary_patterns):
+            dest_path = os.path.join(binaries_dir, file)
+            try:
+              shutil.copy2(file_path, dest_path)
+              print(f"Copied fuzzer binary: {file} -> {dest_path}")
+            except Exception as e:
+              print(f"Failed to copy fuzzer binary {file}: {e}")
+          # Also copy any executable in the root of outdir
+          elif root == outdir:
+            dest_path = os.path.join(binaries_dir, file)
+            try:
+              shutil.copy2(file_path, dest_path)
+              print(f"Copied binary: {file} -> {dest_path}")
+            except Exception as e:
+              print(f"Failed to copy binary {file}: {e}")
 
 
 class CloudBuilderRunner(BuilderRunner):

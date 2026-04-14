@@ -339,14 +339,21 @@ class ADKBaseAgent(BaseAgent):
 
     self.benchmark = benchmark
 
-    # For now, ADKBaseAgents only support the Vertex AI Models.
-    if not isinstance(llm, VertexAIModel):
-      raise ValueError(f'{self.name} only supports Vertex AI models.')
+    # Support both Vertex AI and other LLM models (modified for Claude integration)
+    # if not isinstance(llm, VertexAIModel):
+    #   raise ValueError(f'{self.name} only supports Vertex AI models.')
 
     # Create the agent using the ADK library
+    # Handle different model types
+    if isinstance(llm, VertexAIModel):
+        model_param = llm._vertex_ai_model
+    else:
+        # For other models like Claude via Anthropic API, use the model name
+        model_param = getattr(llm, '_vertex_ai_model', llm.name)
+
     adk_agent = agents.LlmAgent(
         name=self.name,
-        model=llm._vertex_ai_model,
+        model=model_param,
         description=description,
         instruction=instruction,
         tools=tools or [],
