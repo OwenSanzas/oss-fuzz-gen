@@ -424,8 +424,7 @@ def main():
     # Fallback: any case without a live run_result.json is filled from
     # precomputed_outputs/. Successful live runs are never overwritten.
     import shutil
-    repo_root = Path(__file__).resolve().parent.parent
-    pre_root = repo_root / 'precomputed_outputs'
+    pre_root = Path(__file__).resolve().parent / 'subset_25' / 'precomputed'
     if pre_root.is_dir():
         filled = 0
         for case in cases:
