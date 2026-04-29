@@ -1,0 +1,12 @@
+{
+  "case_id": "libplist/bplist_fuzzer",
+  "project": "libplist",
+  "fuzzer_name": "bplist_fuzzer",
+  "target_function": "plist_from_bin",
+  "status": "succeeded",
+  "mode": "full",
+  "seed": 42,
+  "error": null,
+  "generated_harness_path": "libplist/bplist_fuzzer/harness.cpp",
+  "duration_ms": 178374
+}

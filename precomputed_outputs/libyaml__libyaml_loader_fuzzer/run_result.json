@@ -1,0 +1,12 @@
+{
+  "case_id": "libyaml/libyaml_loader_fuzzer",
+  "project": "libyaml",
+  "fuzzer_name": "libyaml_loader_fuzzer",
+  "target_function": "yaml_parser_load",
+  "status": "succeeded",
+  "mode": "full",
+  "seed": 42,
+  "error": null,
+  "generated_harness_path": "libyaml/libyaml_loader_fuzzer/harness.c",
+  "duration_ms": 204805
+}

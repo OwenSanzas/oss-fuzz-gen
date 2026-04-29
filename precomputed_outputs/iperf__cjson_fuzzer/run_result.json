@@ -1,0 +1,12 @@
+{
+  "case_id": "iperf/cjson_fuzzer",
+  "project": "iperf",
+  "fuzzer_name": "cjson_fuzzer",
+  "target_function": "cJSON_Parse",
+  "status": "succeeded",
+  "mode": "full",
+  "seed": 42,
+  "error": null,
+  "generated_harness_path": "iperf/cjson_fuzzer/harness.c",
+  "duration_ms": 129832
+}

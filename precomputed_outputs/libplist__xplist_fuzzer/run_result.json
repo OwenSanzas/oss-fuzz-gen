@@ -1,0 +1,12 @@
+{
+  "case_id": "libplist/xplist_fuzzer",
+  "project": "libplist",
+  "fuzzer_name": "xplist_fuzzer",
+  "target_function": "plist_from_xml",
+  "status": "succeeded",
+  "mode": "full",
+  "seed": 42,
+  "error": null,
+  "generated_harness_path": "libplist/xplist_fuzzer/harness.cpp",
+  "duration_ms": 175235
+}

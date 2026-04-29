@@ -1,0 +1,12 @@
+{
+  "case_id": "zopfli/zopfli_deflate_fuzzer",
+  "project": "zopfli",
+  "fuzzer_name": "zopfli_deflate_fuzzer",
+  "target_function": "ZopfliDeflate",
+  "status": "succeeded",
+  "mode": "full",
+  "seed": 42,
+  "error": null,
+  "generated_harness_path": "zopfli/zopfli_deflate_fuzzer/harness.cpp",
+  "duration_ms": 151236
+}

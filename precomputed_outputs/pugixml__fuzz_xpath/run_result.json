@@ -1,0 +1,12 @@
+{
+  "case_id": "pugixml/fuzz_xpath",
+  "project": "pugixml",
+  "fuzzer_name": "fuzz_xpath",
+  "target_function": "evaluate_node_set",
+  "status": "succeeded",
+  "mode": "full",
+  "seed": 42,
+  "error": null,
+  "generated_harness_path": "pugixml/fuzz_xpath/harness.cpp",
+  "duration_ms": 174669
+}

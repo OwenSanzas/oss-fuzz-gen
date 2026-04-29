@@ -1,0 +1,12 @@
+{
+  "case_id": "libxslt/xslt",
+  "project": "libxslt",
+  "fuzzer_name": "xslt",
+  "target_function": "xsltFuzzXslt",
+  "status": "succeeded",
+  "mode": "full",
+  "seed": 42,
+  "error": null,
+  "generated_harness_path": "libxslt/xslt/harness.c",
+  "duration_ms": 271809
+}

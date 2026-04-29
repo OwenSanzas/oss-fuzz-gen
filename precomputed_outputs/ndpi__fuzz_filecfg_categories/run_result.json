@@ -1,0 +1,12 @@
+{
+  "case_id": "ndpi/fuzz_filecfg_categories",
+  "project": "ndpi",
+  "fuzzer_name": "fuzz_filecfg_categories",
+  "target_function": "load_categories_file_fd",
+  "status": "succeeded",
+  "mode": "full",
+  "seed": 42,
+  "error": null,
+  "generated_harness_path": "ndpi/fuzz_filecfg_categories/harness.c",
+  "duration_ms": 605762
+}

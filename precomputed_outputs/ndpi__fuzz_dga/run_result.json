@@ -1,0 +1,12 @@
+{
+  "case_id": "ndpi/fuzz_dga",
+  "project": "ndpi",
+  "fuzzer_name": "fuzz_dga",
+  "target_function": "ndpi_check_dga_name",
+  "status": "succeeded",
+  "mode": "full",
+  "seed": 42,
+  "error": null,
+  "generated_harness_path": "ndpi/fuzz_dga/harness.c",
+  "duration_ms": 590393
+}

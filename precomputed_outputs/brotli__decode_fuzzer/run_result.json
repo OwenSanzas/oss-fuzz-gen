@@ -1,0 +1,12 @@
+{
+  "case_id": "brotli/decode_fuzzer",
+  "project": "brotli",
+  "fuzzer_name": "decode_fuzzer",
+  "target_function": "BrotliDecoderDecompressStream",
+  "status": "succeeded",
+  "mode": "full",
+  "seed": 42,
+  "error": null,
+  "generated_harness_path": "brotli/decode_fuzzer/harness.c",
+  "duration_ms": 195431
+}

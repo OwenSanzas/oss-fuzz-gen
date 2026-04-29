@@ -1,0 +1,12 @@
+{
+  "case_id": "zlib/compress_fuzzer",
+  "project": "zlib",
+  "fuzzer_name": "compress_fuzzer",
+  "target_function": "compress2",
+  "status": "succeeded",
+  "mode": "full",
+  "seed": 42,
+  "error": null,
+  "generated_harness_path": "zlib/compress_fuzzer/harness.c",
+  "duration_ms": 337087
+}

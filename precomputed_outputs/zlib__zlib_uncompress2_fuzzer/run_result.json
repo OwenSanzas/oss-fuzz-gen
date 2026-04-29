@@ -1,0 +1,12 @@
+{
+  "case_id": "zlib/zlib_uncompress2_fuzzer",
+  "project": "zlib",
+  "fuzzer_name": "zlib_uncompress2_fuzzer",
+  "target_function": "uncompress2",
+  "status": "succeeded",
+  "mode": "full",
+  "seed": 42,
+  "error": null,
+  "generated_harness_path": "zlib/zlib_uncompress2_fuzzer/harness.cpp",
+  "duration_ms": 361200
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "libxslt/xpath",
+  "project": "libxslt",
+  "fuzzer_name": "xpath",
+  "target_function": "xsltFuzzXPath",
+  "status": "succeeded",
+  "mode": "full",
+  "seed": 42,
+  "error": null,
+  "generated_harness_path": "libxslt/xpath/harness.c",
+  "duration_ms": 273855
+}

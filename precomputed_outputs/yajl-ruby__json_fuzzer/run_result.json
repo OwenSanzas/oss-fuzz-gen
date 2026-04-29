@@ -1,0 +1,12 @@
+{
+  "case_id": "yajl-ruby/json_fuzzer",
+  "project": "yajl-ruby",
+  "fuzzer_name": "json_fuzzer",
+  "target_function": "yajl_parse",
+  "status": "succeeded",
+  "mode": "full",
+  "seed": 42,
+  "error": null,
+  "generated_harness_path": "yajl-ruby/json_fuzzer/harness.c",
+  "duration_ms": 99950
+}

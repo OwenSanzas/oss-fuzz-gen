@@ -1,0 +1,12 @@
+{
+  "case_id": "libpcap/fuzz_filter",
+  "project": "libpcap",
+  "fuzzer_name": "fuzz_filter",
+  "target_function": "pcap_compile",
+  "status": "succeeded",
+  "mode": "full",
+  "seed": 42,
+  "error": null,
+  "generated_harness_path": "libpcap/fuzz_filter/harness.c",
+  "duration_ms": 325300
+}

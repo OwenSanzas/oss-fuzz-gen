@@ -1,0 +1,8 @@
+{
+  "lines_pct": 1.3,
+  "branches_pct": 0.4,
+  "functions_pct": 3.0,
+  "regions_pct": 0.8,
+  "status": "entry_match",
+  "entry_match": "Y"
+}

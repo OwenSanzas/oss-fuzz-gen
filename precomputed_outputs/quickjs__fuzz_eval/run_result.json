@@ -1,0 +1,12 @@
+{
+  "case_id": "quickjs/fuzz_eval",
+  "project": "quickjs",
+  "fuzzer_name": "fuzz_eval",
+  "target_function": "JS_Eval",
+  "status": "succeeded",
+  "mode": "full",
+  "seed": 42,
+  "error": null,
+  "generated_harness_path": "quickjs/fuzz_eval/harness.c",
+  "duration_ms": 206634
+}

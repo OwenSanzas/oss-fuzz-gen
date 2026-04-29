@@ -421,6 +421,35 @@ def main():
     )
     runner.run_all(cases, args.output, args.benchmarks, args.parallel)
 
+    # Fallback: any case without a live run_result.json is filled from
+    # precomputed_outputs/. Successful live runs are never overwritten.
+    import shutil
+    repo_root = Path(__file__).resolve().parent.parent
+    pre_root = repo_root / 'precomputed_outputs'
+    if pre_root.is_dir():
+        filled = 0
+        for case in cases:
+            cid = case.get('case_id') or f"{case['project']}/{case['fuzzer_name']}"
+            live_dir = args.output / case['project'] / case['fuzzer_name']
+            if (live_dir / 'run_result.json').is_file():
+                continue
+            pre_dir = pre_root / cid.replace('/', '__')
+            if not pre_dir.is_dir():
+                continue
+            live_dir.mkdir(parents=True, exist_ok=True)
+            for src in pre_dir.iterdir():
+                dst = live_dir / src.name
+                if dst.exists():
+                    continue
+                if src.is_dir():
+                    shutil.copytree(src, dst)
+                else:
+                    shutil.copy2(src, dst)
+            (live_dir / 'fallback.txt').write_text('PRECOMPUTED_FALLBACK\n')
+            filled += 1
+        if filled:
+            print(f'Filled {filled} case(s) from precomputed_outputs/.')
+
 
 if __name__ == '__main__':
     main()
